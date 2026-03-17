@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="ALUMNOS")
@@ -35,4 +37,8 @@ public class Alumno {
 
     @Column(name = "FECHA_INGRESO")
     private LocalDate fechaIngreso;
+
+    @OneToMany(mappedBy = "alumno")
+    @Builder.Default
+    private List<Inscripcion> inscripciones = new ArrayList<>();
 }
