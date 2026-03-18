@@ -3,7 +3,6 @@ package com.esteban.escuela.services.aulas;
 import com.esteban.escuela.dto.aulas.AulaRequest;
 import com.esteban.escuela.dto.aulas.AulaResponse;
 import com.esteban.escuela.entities.Aula;
-import com.esteban.escuela.entities.Maestro;
 import com.esteban.escuela.exceptions.EntidadRelacionadaException;
 import com.esteban.escuela.exceptions.RecursoNoEncontrado;
 import com.esteban.escuela.mappers.AulaMapper;
@@ -34,6 +33,7 @@ public class AulaServiceImpl implements AulaService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AulaResponse obtenerPorId(Long id) {
         return aulaMapper.entityToResponse(obtenerAulaOException(id));
     }
