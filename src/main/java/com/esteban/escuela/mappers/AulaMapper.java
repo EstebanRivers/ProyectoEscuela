@@ -2,7 +2,10 @@ package com.esteban.escuela.mappers;
 
 import com.esteban.escuela.dto.aulas.AulaRequest;
 import com.esteban.escuela.dto.aulas.AulaResponse;
+import com.esteban.escuela.dto.datos.DatosAula;
+import com.esteban.escuela.dto.datos.DatosMaestro;
 import com.esteban.escuela.entities.Aula;
+import com.esteban.escuela.entities.Maestro;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,5 +28,14 @@ public class AulaMapper implements CommonMapper<AulaRequest, AulaResponse, Aula>
                 entity.getId(),
                 entity.getNombre(),
                 entity.getCapacidad());
+    }
+
+    public DatosAula aulaToDatosAula(Aula aula ){
+        if (aula==null){return null; }
+
+        return new DatosAula(
+                aula.getNombre(),
+                aula.getCapacidad()
+        );
     }
 }

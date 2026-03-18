@@ -2,7 +2,6 @@ package com.esteban.escuela.services.cursos;
 
 import com.esteban.escuela.dto.cursos.CursoRequest;
 import com.esteban.escuela.dto.cursos.CursoResponse;
-import com.esteban.escuela.entities.Aula;
 import com.esteban.escuela.entities.Curso;
 import com.esteban.escuela.exceptions.EntidadRelacionadaException;
 import com.esteban.escuela.exceptions.RecursoNoEncontrado;
@@ -21,9 +20,9 @@ import java.util.List;
 @Transactional
 @Slf4j
 public class CursoServiceImpl implements  CursoService {
-    CursoRepository cursoRepository;
-    CursoMapper cursoMapper;
-    GrupoRepository grupoRepository;
+    private final CursoRepository cursoRepository;
+    private final CursoMapper cursoMapper;
+    private final GrupoRepository grupoRepository;
 
     @Override
     @Transactional(readOnly = true)

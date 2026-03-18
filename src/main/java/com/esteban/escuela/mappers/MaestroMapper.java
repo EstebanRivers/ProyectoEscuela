@@ -1,8 +1,10 @@
 package com.esteban.escuela.mappers;
 
 import com.esteban.escuela.dto.datos.DatosCurso;
+import com.esteban.escuela.dto.datos.DatosMaestro;
 import com.esteban.escuela.dto.maestros.MaestroRequest;
 import com.esteban.escuela.dto.maestros.MaestroResponse;
+import com.esteban.escuela.entities.Curso;
 import com.esteban.escuela.entities.Maestro;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -52,5 +54,15 @@ public class MaestroMapper implements CommonMapper<MaestroRequest, MaestroRespon
 
         return maestro.getGrupos().stream()
                 .map(grupo -> cursoMapper.cursoToDatosCurso(grupo.getCurso())).toList();
+    }
+
+    public DatosMaestro maestroToDatosMaestro(Maestro maestro){
+        if (maestro==null){return null; }
+
+        return new DatosMaestro(
+                maestro.getNombre(),
+                maestro.getEmail(),
+                maestro.getTelefono()
+        );
     }
 }
