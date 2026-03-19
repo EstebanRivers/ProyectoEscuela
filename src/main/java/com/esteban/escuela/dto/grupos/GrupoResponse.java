@@ -1,13 +1,8 @@
 package com.esteban.escuela.dto.grupos;
 
-import com.esteban.escuela.dto.aulas.AulaResponse;
 import com.esteban.escuela.dto.datos.DatosAula;
 import com.esteban.escuela.dto.datos.DatosCurso;
 import com.esteban.escuela.dto.datos.DatosMaestro;
-import com.esteban.escuela.dto.maestros.MaestroResponse;
-
-import java.util.List;
-
 
 public record GrupoResponse(
         Long id,

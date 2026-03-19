@@ -1,5 +1,6 @@
 package com.esteban.escuela.mappers;
 
+import com.esteban.escuela.dto.datos.GrupoResumen;
 import com.esteban.escuela.dto.grupos.GrupoRequest;
 import com.esteban.escuela.dto.grupos.GrupoResponse;
 import com.esteban.escuela.entities.Aula;
@@ -9,7 +10,6 @@ import com.esteban.escuela.entities.Maestro;
 import com.esteban.escuela.exceptions.RecursoNoEncontrado;
 import com.esteban.escuela.repositories.AulaRepository;
 import com.esteban.escuela.repositories.CursoRepository;
-import com.esteban.escuela.repositories.GrupoRepository;
 import com.esteban.escuela.repositories.MaestroRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -46,7 +46,6 @@ public class GrupoMapper implements CommonMapper<GrupoRequest, GrupoResponse, Gr
                 .build();
     }
 
-
     @Override
     public GrupoResponse entityToResponse(Grupo entity) {
         if (entity==null) {return null;}
@@ -57,6 +56,16 @@ public class GrupoMapper implements CommonMapper<GrupoRequest, GrupoResponse, Gr
                 maestroMapper.maestroToDatosMaestro(entity.getMaestro()),
                 aulaMapper.aulaToDatosAula(entity.getAula()),
                 entity.getPeriodo()
+        );
+    }
+
+    public GrupoResumen grupoToGrupoResumen(Grupo grupo) {
+        if (grupo==null) {return null;}
+        return new GrupoResumen(
+                grupo.getCurso().getNombre(),
+                grupo.getMaestro().getNombre(),
+                grupo.getAula().getNombre(),
+                grupo.getPeriodo()
         );
     }
 }
