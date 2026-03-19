@@ -2,12 +2,16 @@ package com.esteban.escuela.mappers;
 
 import com.esteban.escuela.dto.alumnos.AlumnoRequest;
 import com.esteban.escuela.dto.alumnos.AlumnoResponse;
+import com.esteban.escuela.dto.datos.DatosAlumno;
 import com.esteban.escuela.dto.datos.DatosCalificaciones;
+import com.esteban.escuela.dto.datos.GrupoResumen;
 import com.esteban.escuela.entities.Alumno;
+import com.esteban.escuela.entities.Grupo;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,7 @@ public class AlumnoMapper implements CommonMapper<AlumnoRequest, AlumnoResponse,
                 .nombre(request.nombre())
                 .apellidoPaterno(request.apellidoPaterno())
                 .apellidoMaterno(request.apellidoMaterno())
+                .fechaIngreso(LocalDate.now())
                 .build();
     }
 
@@ -62,9 +67,11 @@ public class AlumnoMapper implements CommonMapper<AlumnoRequest, AlumnoResponse,
                 .map(inscripcion -> new DatosCalificaciones(
                         inscripcion.getGrupo().getCurso().getNombre(),
                         inscripcion.getGrupo().getPeriodo(),
-                        inscripcion.getCalificacion().getCalificacion() != null
-                                ? inscripcion.getCalificacion().getCalificacion() : null
-                )).toList();
+                        inscripcion.getCalificacion() != null
+                                ? inscripcion.getCalificacion().getCalificacion()
+                                : null
+                ))
+                .toList();
     }
 
     private BigDecimal calificacionesToPromedio(List<DatosCalificaciones> calificaciones) {
@@ -81,5 +88,15 @@ public class AlumnoMapper implements CommonMapper<AlumnoRequest, AlumnoResponse,
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return suma.divide(BigDecimal.valueOf(calificacionesValidas.size()), 2, RoundingMode.HALF_UP);
+    }
+
+    public DatosAlumno alumnoToDatosAlumno(Alumno alumno) {
+        if (alumno==null) {return null;}
+        return new DatosAlumno(
+                String.join(" ", alumno.getNombre(), alumno.getApellidoPaterno(), alumno.getApellidoMaterno()),
+                alumno.getMatricula(),
+                alumno.getEmail(),
+                alumno.getFechaIngreso().format(formato)
+        );
     }
 }

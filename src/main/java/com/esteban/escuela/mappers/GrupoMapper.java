@@ -3,7 +3,6 @@ package com.esteban.escuela.mappers;
 import com.esteban.escuela.dto.datos.GrupoResumen;
 import com.esteban.escuela.dto.grupos.GrupoRequest;
 import com.esteban.escuela.dto.grupos.GrupoResponse;
-import com.esteban.escuela.dto.horarios.HorarioRequest;
 import com.esteban.escuela.entities.*;
 import com.esteban.escuela.exceptions.RecursoNoEncontrado;
 import com.esteban.escuela.repositories.AulaRepository;

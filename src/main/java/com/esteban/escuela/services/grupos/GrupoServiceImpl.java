@@ -90,7 +90,7 @@ public class GrupoServiceImpl implements GrupoService {
 
         log.info("Eliminando grupo con id: {}", id);
 
-        if(horarioRepository.existByGrupoId(id)){
+        if(horarioRepository.existsByGrupoId(id)){
             throw new EntidadRelacionadaException("No se puede eliminar al Grupo ya qye tiene horarios asignados");
         }
 

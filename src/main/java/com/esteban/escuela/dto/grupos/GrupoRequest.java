@@ -1,6 +1,5 @@
 package com.esteban.escuela.dto.grupos;
 
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
