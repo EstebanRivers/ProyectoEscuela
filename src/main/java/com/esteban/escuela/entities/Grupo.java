@@ -3,6 +3,9 @@ package com.esteban.escuela.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name="GRUPOS")
 @NoArgsConstructor
@@ -30,5 +33,9 @@ public class Grupo {
 
     @Column(name = "PERIODO", length = 20, nullable = false)
     private String periodo;
+
+    @OneToMany(mappedBy = "grupo")
+    @Builder.Default
+    private List<Horario> horarios = new ArrayList<>();
 
 }

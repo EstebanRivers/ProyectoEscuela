@@ -6,12 +6,10 @@ import com.esteban.escuela.entities.Aula;
 import com.esteban.escuela.entities.Curso;
 import com.esteban.escuela.entities.Grupo;
 import com.esteban.escuela.entities.Maestro;
+import com.esteban.escuela.exceptions.EntidadRelacionadaException;
 import com.esteban.escuela.exceptions.RecursoNoEncontrado;
 import com.esteban.escuela.mappers.GrupoMapper;
-import com.esteban.escuela.repositories.AulaRepository;
-import com.esteban.escuela.repositories.CursoRepository;
-import com.esteban.escuela.repositories.GrupoRepository;
-import com.esteban.escuela.repositories.MaestroRepository;
+import com.esteban.escuela.repositories.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +28,7 @@ public class GrupoServiceImpl implements GrupoService {
     private final CursoRepository cursoRepository;
     private final MaestroRepository maestroRepository;
     private final AulaRepository aulaRepository;
+    private final HorarioRepository horarioRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -88,9 +87,16 @@ public class GrupoServiceImpl implements GrupoService {
     @Override
     public void eliminar(Long id) {
         Grupo grupo = obtenerGrupoOException(id);
-        log.info("Eliminando Grupo: {}", grupo.getCurso());
+
+        log.info("Eliminando grupo con id: {}", id);
+
+        if(horarioRepository.existByGrupoId(id)){
+            throw new EntidadRelacionadaException("No se puede eliminar al Grupo ya qye tiene horarios asignados");
+        }
+
         grupoRepository.delete(grupo);
-        log.info("Grupo Eliminando: {}", id);
+
+        log.info("Grupo con id: {} Eliminado", id);
 
     }
 

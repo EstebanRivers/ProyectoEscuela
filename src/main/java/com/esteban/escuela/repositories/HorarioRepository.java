@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface HorarioRepository extends JpaRepository<Horario, Long> {
 
+    boolean existByGrupoId (Long grupoId);
+
     boolean existsByGrupoIdAndDiaAndHoraInicioAndHoraFin(Long grupoId, DiaSemana diaSemana, String horaInicio, String  horaFin);
     boolean existsByGrupoIdAndDiaAndHoraInicioAndHoraFinAndIdNot(Long grupoId, DiaSemana diaSemana, String horaInicio, String  horaFin, Long id);
 

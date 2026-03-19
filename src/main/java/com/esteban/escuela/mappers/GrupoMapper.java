@@ -3,16 +3,17 @@ package com.esteban.escuela.mappers;
 import com.esteban.escuela.dto.datos.GrupoResumen;
 import com.esteban.escuela.dto.grupos.GrupoRequest;
 import com.esteban.escuela.dto.grupos.GrupoResponse;
-import com.esteban.escuela.entities.Aula;
-import com.esteban.escuela.entities.Curso;
-import com.esteban.escuela.entities.Grupo;
-import com.esteban.escuela.entities.Maestro;
+import com.esteban.escuela.dto.horarios.HorarioRequest;
+import com.esteban.escuela.entities.*;
 import com.esteban.escuela.exceptions.RecursoNoEncontrado;
 import com.esteban.escuela.repositories.AulaRepository;
 import com.esteban.escuela.repositories.CursoRepository;
 import com.esteban.escuela.repositories.MaestroRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @AllArgsConstructor
@@ -50,13 +51,26 @@ public class GrupoMapper implements CommonMapper<GrupoRequest, GrupoResponse, Gr
     public GrupoResponse entityToResponse(Grupo entity) {
         if (entity==null) {return null;}
 
+        List<String> horarios = datosHorarioAGrupo(entity);
+
         return new GrupoResponse(
                 entity.getId(),
                 cursoMapper.cursoToDatosCurso(entity.getCurso()),
                 maestroMapper.maestroToDatosMaestro(entity.getMaestro()),
                 aulaMapper.aulaToDatosAula(entity.getAula()),
+                horarios,
                 entity.getPeriodo()
         );
+    }
+
+    private List<String> datosHorarioAGrupo (Grupo grupo) {
+        if (grupo==null || grupo.getHorarios() == null) {return new ArrayList<>();}
+
+        return grupo.getHorarios().stream()
+                .map(horario -> horario.getDia().getDescripcion() + " " +
+                        horario.getHoraInicio() + " - " +
+                        horario.getHoraFin())
+                .toList();
     }
 
     public GrupoResumen grupoToGrupoResumen(Grupo grupo) {
