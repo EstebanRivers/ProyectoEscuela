@@ -18,4 +18,7 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
     String generarEmail(@Param("nombre") String nombre,
                         @Param("paterno") String apellidoPaterno,
                         @Param("materno") String apellidoMaterno);
+
+    boolean existsByNombreAndApellidoPaternoAndApellidoMaterno(String nombre, String paterno, String materno);
+    boolean existsByNombreAndApellidoPaternoAndApellidoMaternoAndIdNot(String nombre, String paterno, String materno, Long id);
 }

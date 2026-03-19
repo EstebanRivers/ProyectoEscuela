@@ -6,9 +6,14 @@ import com.esteban.escuela.entities.Calificacion;
 import com.esteban.escuela.entities.Inscripcion;
 import com.esteban.escuela.exceptions.RecursoNoEncontrado;
 import com.esteban.escuela.repositories.InscripcionRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+@Component
+@AllArgsConstructor
 public class CalificacionMapper implements CommonMapper<CalificacionRequest, CalificacionResponse, Calificacion> {
     InscripcionMapper inscripcionMapper;
     InscripcionRepository inscripcionRepository;
@@ -25,6 +30,7 @@ public class CalificacionMapper implements CommonMapper<CalificacionRequest, Cal
         return Calificacion.builder()
                 .inscripcion(inscripcion)
                 .calificacion(request.calificacion())
+                .fechaRegistro(LocalDate.now())
                 .build();
     }
 
@@ -36,7 +42,7 @@ public class CalificacionMapper implements CommonMapper<CalificacionRequest, Cal
                 entity.getId(),
                 inscripcionMapper.resumenInscripcion(entity.getInscripcion()),
                 entity.getCalificacion(),
-                entity.getFechaRegistro()
+                entity.getFechaRegistro().format(formato)
         );
     }
 }

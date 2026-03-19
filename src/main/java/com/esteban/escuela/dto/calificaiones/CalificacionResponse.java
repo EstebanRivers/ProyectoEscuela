@@ -11,6 +11,6 @@ public record CalificacionResponse(
         Long id,
         DatosInscripcion inscripcion,
         BigDecimal calificacion,
-        LocalDate fechaRegistro
+        String fechaRegistro
 ) {
 }

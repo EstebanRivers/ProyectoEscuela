@@ -43,6 +43,7 @@ public class AlumnoServiceImpl implements AlumnoServices {
     public AlumnoResponse registrar(AlumnoRequest request) {
         log.debug("Iniciando registrar alumno: {}", request.nombre());
 
+        alumnoUnico(request.nombre(), request.apellidoPaterno(), request.apellidoMaterno());
 
         String matricula = generarMatricula(
                 request.nombre(),
@@ -64,6 +65,8 @@ public class AlumnoServiceImpl implements AlumnoServices {
     public AlumnoResponse actualizar(AlumnoRequest request, Long id) {
         Alumno alumno = obtenerAlumnoOException(id);
         log.debug("Iniciando actualizar alumno con id: {}", id);
+
+        alumnoUnicoActualizado(request.nombre(), request.apellidoPaterno(), request.apellidoMaterno(), id);
 
         if (cambioDatosAlumno(request, alumno)) {
             alumno.setNombre(request.nombre());
@@ -93,6 +96,17 @@ public class AlumnoServiceImpl implements AlumnoServices {
         log.debug("Buscando Alumno por ID {}", id);
         return alumnoRepository.findById(id).orElseThrow(()->
                 new RecursoNoEncontrado("Alumno no encontrado con el id: " + id));
+    }
+
+    private void alumnoUnico(String nombre, String paterno, String materno) {
+        if (alumnoRepository.existsByNombreAndApellidoPaternoAndApellidoMaterno(nombre, paterno, materno)) {
+            throw new IllegalArgumentException("Ya existe un alumno con este nombre: " + nombre + " " + paterno + " " + materno );
+        }
+    }
+    private void alumnoUnicoActualizado(String nombre, String paterno, String materno, Long id) {
+        if (alumnoRepository.existsByNombreAndApellidoPaternoAndApellidoMaternoAndIdNot(nombre, paterno, materno, id)) {
+            throw new IllegalArgumentException("Ya existe un alumno con este nombre: " + nombre + " " + paterno + " " + materno );
+        }
     }
 
     private String generarMatricula(String nombre, String apellidoPaterno, String apellidoMaterno) {
