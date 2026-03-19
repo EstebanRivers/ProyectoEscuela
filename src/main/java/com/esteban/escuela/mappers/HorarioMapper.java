@@ -16,7 +16,7 @@ public class HorarioMapper implements CommonMapper<HorarioRequest, HorarioRespon
         if(request == null) return null;
 
         return Horario.builder()
-                .dia(request.diaSemana())
+                .dia(request.dia())
                 .horaInicio(request.horaInicio())
                 .horaFin(request.horaFin())
                 .build();

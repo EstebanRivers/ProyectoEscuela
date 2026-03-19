@@ -1,6 +1,7 @@
 package com.esteban.escuela.enums;
 
 import com.esteban.escuela.exceptions.RecursoNoEncontrado;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -23,6 +24,7 @@ public enum DiaSemana {
                 .replace("ú", "u").replace("ü", "u");
     }
 
+    @JsonCreator
     public static DiaSemana fromDescripcion(String descripcion) {
         String buscado = quitarAcentos(descripcion.trim());
         for (DiaSemana dia : values()) {

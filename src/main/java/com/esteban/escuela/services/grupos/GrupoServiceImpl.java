@@ -29,6 +29,7 @@ public class GrupoServiceImpl implements GrupoService {
     private final MaestroRepository maestroRepository;
     private final AulaRepository aulaRepository;
     private final HorarioRepository horarioRepository;
+    private final InscripcionRepository  inscripcionRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -90,8 +91,8 @@ public class GrupoServiceImpl implements GrupoService {
 
         log.info("Eliminando grupo con id: {}", id);
 
-        if(horarioRepository.existsByGrupoId(id)){
-            throw new EntidadRelacionadaException("No se puede eliminar al Grupo ya qye tiene horarios asignados");
+        if(horarioRepository.existsByGrupoId(id) || inscripcionRepository.existsByGrupoId(id)){
+            throw new EntidadRelacionadaException("No se puede eliminar al Grupo ya que tiene horarios o inscripciones asignadas");
         }
 
         grupoRepository.delete(grupo);
