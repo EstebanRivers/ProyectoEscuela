@@ -4,6 +4,8 @@ import com.esteban.escuela.dto.horarios.HorarioRequest;
 import com.esteban.escuela.dto.horarios.HorarioResponse;
 import com.esteban.escuela.entities.Grupo;
 import com.esteban.escuela.entities.Horario;
+import com.esteban.escuela.enums.DiaSemana;
+import com.esteban.escuela.exceptions.EntidadRelacionadaException;
 import com.esteban.escuela.exceptions.RecursoNoEncontrado;
 import com.esteban.escuela.mappers.HorarioMapper;
 import com.esteban.escuela.repositories.GrupoRepository;
@@ -44,6 +46,7 @@ public class HorarioServiceImpl implements HorarioService{
     public HorarioResponse registrar(HorarioRequest request) {
         log.info("Registrando horario {}", request);
 
+        horarioUnico(request.idGrupo(), request.diaSemana(),request.horaInicio(), request.horaFin());
         validarHoras(request.horaInicio(), request.horaFin());
         Grupo grupo = grupoRepository.findById(request.idGrupo())
                 .orElseThrow(() -> new RecursoNoEncontrado("Grupo no encontrado con el ID: " + request.idGrupo()));
@@ -59,13 +62,29 @@ public class HorarioServiceImpl implements HorarioService{
 
     @Override
     public HorarioResponse actualizar(HorarioRequest request, Long id) {
+        Horario horario = obtenerHorarioOException(id);
+        log.info("Actualizando horario {}", request);
 
-        return null;
+        Grupo grupo = grupoRepository.findById(request.idGrupo())
+                .orElseThrow(() -> new RecursoNoEncontrado("Grupo no encontrado con el ID: " + request.idGrupo()));
+
+        horarioUnicoActualizado(request.idGrupo(), request.diaSemana(),request.horaInicio(), request.horaFin(), id);
+        validarHoras(request.horaInicio(), request.horaFin());
+        validarTraslapeActualizado(request.idGrupo(), grupo.getAula().getId(), request.horaInicio(), request.horaFin(), id);
+
+        horario.setGrupo(grupo);
+        horario.setDia(request.diaSemana());
+        horario.setHoraInicio(request.horaInicio());
+        horario.setHoraFin(request.horaFin());
+
+        return horarioMapper.entityToResponse(horario);
     }
 
     @Override
     public void eliminar(Long id) {
+        Horario horario = obtenerHorarioOException(id);
 
+        horarioRepository.delete(horario);
     }
 
     private Horario obtenerHorarioOException(Long id) {
@@ -74,11 +93,15 @@ public class HorarioServiceImpl implements HorarioService{
                 new RecursoNoEncontrado("Horario no encontrado con el id: " + id));
     }
 
-    private void horarioUnico (Long idGrupo, String horaInicio, String horaFin) {
-        if (horarioRepository.existsByGrupoIdAndHoraInicioAndHoraFin(idGrupo, horaInicio, horaFin)) {
-            throw new IllegalArgumentException("Horario ya existente en ese mismo grupo");
+    private void horarioUnico (Long idGrupo, DiaSemana diaSemana, String horaInicio, String horaFin) {
+        if (horarioRepository.existsByGrupoIdAndDiaAndHoraInicioAndHoraFin(idGrupo, diaSemana, horaInicio, horaFin)) {
+            throw new IllegalArgumentException("Horario ya existente en ese mismo grupo y dia");
         }
-
+    }
+    private void horarioUnicoActualizado (Long idGrupo, DiaSemana diaSemana, String horaInicio, String horaFin, Long id) {
+        if (horarioRepository.existsByGrupoIdAndDiaAndHoraInicioAndHoraFinAndIdNot(idGrupo, diaSemana, horaInicio, horaFin, id)) {
+            throw new IllegalArgumentException("Horario ya existente en ese mismo grupo y dia");
+        }
     }
 
     private void validarHoras(String horaInicio, String horaFin) {
@@ -97,6 +120,23 @@ public class HorarioServiceImpl implements HorarioService{
         List<Horario> horariosExistentes = horarioRepository.findByGrupoIdOrGrupoAulaId(grupoId, aulaId);
 
         for (Horario h : horariosExistentes) {
+            LocalTime inicioExistente = parseHora(h.getHoraInicio());
+            LocalTime finExistente = parseHora(h.getHoraFin());
+
+            boolean traslape = !(fin.isBefore(inicioExistente) || inicio.isAfter(finExistente));
+            if (traslape) {
+                throw new IllegalArgumentException("El horario se traslapa con otro existente en el mismo grupo o aula");
+            }
+        }
+    }
+    private void validarTraslapeActualizado(Long grupoId, Long aulaId, String horaInicio, String horaFin, Long id) {
+        LocalTime inicio = parseHora(horaInicio);
+        LocalTime fin = parseHora(horaFin);
+
+        List<Horario> horariosExistentes = horarioRepository.findByGrupoIdOrGrupoAulaId(grupoId, aulaId);
+
+        for (Horario h : horariosExistentes) {
+            if (h.getId().equals(id)) {continue;}
             LocalTime inicioExistente = parseHora(h.getHoraInicio());
             LocalTime finExistente = parseHora(h.getHoraFin());
 
