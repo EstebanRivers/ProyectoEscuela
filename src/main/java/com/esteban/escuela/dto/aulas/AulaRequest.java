@@ -1,8 +1,6 @@
 package com.esteban.escuela.dto.aulas;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record AulaRequest(
 
@@ -11,6 +9,8 @@ public record AulaRequest(
         String nombre,
 
         @NotNull(message = "La capacidad es requerida")
+        @Positive(message = "La capacidad debe ser mayor a 0")
+        @Max(value = 30, message = ("El limite de capacidad debe ser menor a 30"))
         Integer capacidad
 ) {
 }
