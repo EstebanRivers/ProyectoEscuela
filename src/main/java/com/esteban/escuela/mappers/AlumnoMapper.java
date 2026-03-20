@@ -67,9 +67,8 @@ public class AlumnoMapper implements CommonMapper<AlumnoRequest, AlumnoResponse,
                 .map(inscripcion -> new DatosCalificaciones(
                         inscripcion.getGrupo().getCurso().getNombre(),
                         inscripcion.getGrupo().getPeriodo(),
-                        inscripcion.getCalificacion() != null
-                                ? inscripcion.getCalificacion().getCalificacion()
-                                : null
+                        inscripcion.getCalificacion() != null ?
+                                inscripcion.getCalificacion().getCalificacion() : null
                 ))
                 .toList();
     }

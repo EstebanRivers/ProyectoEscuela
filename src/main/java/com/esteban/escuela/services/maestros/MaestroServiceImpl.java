@@ -43,7 +43,7 @@ public class MaestroServiceImpl implements  MaestroService {
     public MaestroResponse registrar(MaestroRequest request) {
         log.info("Registrando maestro: {}", request.nombre());
 
-        validarTelefonoUnico(request.email());
+        validarTelefonoUnico(request.telefono());
         validarEmailUnico(request.email());
 
         Maestro maestro = maestroRepository.save(maestroMapper.requestToEntity(request));

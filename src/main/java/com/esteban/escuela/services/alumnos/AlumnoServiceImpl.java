@@ -84,7 +84,7 @@ public class AlumnoServiceImpl implements AlumnoServices {
         Alumno alumno = obtenerAlumnoOException(id);
         log.debug("Iniciando eliminar alumno con id: {}", id);
 
-        if (inscripcionRepository.existsById(id)) {
+        if (inscripcionRepository.existsByAlumnoId(id)) {
             throw new EntidadRelacionadaException("No se puede eliminar el alumno ya que tiene inscripciones asignadas");
         }
 
